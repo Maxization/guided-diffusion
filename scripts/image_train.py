@@ -1,7 +1,9 @@
 """
 Train a diffusion model on images.
 """
-
+import sys
+sys.path.append("..")
+sys.path.append(".")
 import argparse
 
 from guided_diffusion import dist_util, logger
