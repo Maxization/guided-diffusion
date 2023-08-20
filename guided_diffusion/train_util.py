@@ -38,6 +38,7 @@ class TrainLoop:
         schedule_sampler=None,
         weight_decay=0.0,
         lr_anneal_steps=0,
+        iterations = 300000
     ):
         self.model = model
         self.diffusion = diffusion
@@ -45,6 +46,7 @@ class TrainLoop:
         self.batch_size = batch_size
         self.microbatch = microbatch if microbatch > 0 else batch_size
         self.lr = lr
+        self.iterations = iterations
         self.ema_rate = (
             [ema_rate]
             if isinstance(ema_rate, float)
@@ -151,9 +153,9 @@ class TrainLoop:
             self.opt.load_state_dict(state_dict)
 
     def run_loop(self):
-        while (
-            not self.lr_anneal_steps
-            or self.step + self.resume_step < self.lr_anneal_steps
+        while (self.step + self.resume_step < self.iterations and
+            (not self.lr_anneal_steps
+            or self.step + self.resume_step < self.lr_anneal_steps)
         ):
             batch, cond = next(self.data)
             self.run_step(batch, cond)
