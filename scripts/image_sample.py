@@ -54,20 +54,13 @@ def main():
             diffusion.p_sample_loop if not args.use_ddim else diffusion.ddim_sample_loop
         )
 
-        if args.type == 'CBISDDSM':
-            sample = sample_fn(
-                model,
-                (args.batch_size, 3, 512, 320),
-                clip_denoised=args.clip_denoised,
-                model_kwargs=model_kwargs,
-            )
-        else:
-            sample = sample_fn(
-                model,
-                (args.batch_size, 3, args.image_size, args.image_size),
-                clip_denoised=args.clip_denoised,
-                model_kwargs=model_kwargs,
-            )
+        sample = sample_fn(
+            model,
+            (args.batch_size, 3, args.image_size, args.image_size),
+            clip_denoised=args.clip_denoised,
+            model_kwargs=model_kwargs,
+        )
+
         sample = ((sample + 1) * 127.5).clamp(0, 255).to(th.uint8)
         sample = sample.permute(0, 2, 3, 1)
         sample = sample.contiguous()
