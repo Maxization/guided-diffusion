@@ -53,12 +53,21 @@ def main():
         sample_fn = (
             diffusion.p_sample_loop if not args.use_ddim else diffusion.ddim_sample_loop
         )
-        sample = sample_fn(
-            model,
-            (args.batch_size, 3, args.image_size, args.image_size),
-            clip_denoised=args.clip_denoised,
-            model_kwargs=model_kwargs,
-        )
+
+        if args.type == 'CBISDDSM':
+            sample = sample_fn(
+                model,
+                (args.batch_size, 1, 512, 320),
+                clip_denoised=args.clip_denoised,
+                model_kwargs=model_kwargs,
+            )
+        else:
+            sample = sample_fn(
+                model,
+                (args.batch_size, 3, args.image_size, args.image_size),
+                clip_denoised=args.clip_denoised,
+                model_kwargs=model_kwargs,
+            )
         sample = ((sample + 1) * 127.5).clamp(0, 255).to(th.uint8)
         sample = sample.permute(0, 2, 3, 1)
         sample = sample.contiguous()
@@ -100,6 +109,7 @@ def create_argparser():
         use_ddim=False,
         model_path="",
         out_dir='./results/',
+        type='MRI'
     )
     defaults.update(model_and_diffusion_defaults())
     parser = argparse.ArgumentParser()
