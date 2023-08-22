@@ -57,7 +57,7 @@ def main():
         if args.type == 'CBISDDSM':
             sample = sample_fn(
                 model,
-                (args.batch_size, 1, 512, 320),
+                (args.batch_size, 3, 512, 320),
                 clip_denoised=args.clip_denoised,
                 model_kwargs=model_kwargs,
             )
